@@ -31,9 +31,9 @@
   </style>
   <link href="https://cdn.bootcss.com/normalize/8.0.0/normalize.min.css" rel="stylesheet">
   <!--<link href="https://cdn.bootcss.com/mapbox-gl/0.47.0/mapbox-gl.css" rel="stylesheet">-->
-  <link href="https://cdn.osmbuildings.org/mapbox-gl/0.47.0/mapbox-gl.css" rel="stylesheet">
+  <link href="./node_modules/mapbox-gl/dist/mapbox-gl.css" rel="stylesheet">
 
-  <script src="https://cdn.osmbuildings.org/mapbox-gl/0.47.0/mapbox-gl.js"></script>
+  <script src="./node_modules/mapbox-gl/dist/mapbox-gl.js"></script>
 </head>
 
 <body>
@@ -43,13 +43,16 @@
   <!--<script src="https://cdn.bootcss.com/mapbox-gl/0.47.0/mapbox-gl.js" charset="utf-8"></script>-->
   <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js" charset="utf-8"></script>
   <!-- 引入 echarts.js -->
-  <script src="https://cdn.bootcss.com/echarts/4.1.0/echarts.min.js"></script>
-  <script src="./node_modules/echarts-gl/dist/echarts-gl.min.js" charset="utf-8"></script>
+  <!--<script src="https://cdn.bootcss.com/echarts/4.1.0/echarts.min.js"></script>-->
+  <script src="./node_modules/echarts/dist/echarts.min.js"></script>
+  <script src="./node_modules/echarts-gl/dist/echarts-gl.js" charset="utf-8"></script>
   <script src="./EchartsLayer.js" charset="utf-8"></script>
   <!--<script src="./echarts-gl.min.js" charset="utf-8"></script>-->
   <script type="text/javascript">
     // mapbox TOKEN
     mapboxgl.accessToken = 'pk.eyJ1Ijoic3V0cGMiLCJhIjoiY2o4MWE3ZHI5MjZqYzJ3czZuanRidHhlaSJ9.QyvBqMh9qPYw85xbiMeW9w'
+
+
     var myChart = echarts.init(document.getElementById("map"))
     $.getJSON("map0.geojson", function(buildingsGeoJSON) {
       // 注册可用的地图
@@ -63,6 +66,11 @@
           label: feature.properties.name
         };
       })
+
+      var workspace = 'traffic:';
+      var layer_name = 'traffic_state';
+      var espg = '3857';
+
       // mapbox://styles/sutpc/cjk84o65sh0yo2rqnapcetdth
       // mapbox://styles/mapbox/dark-v9
       $.getJSON("road.geojson", function(roadsJSON) {
@@ -86,7 +94,7 @@
           },
           mapbox: {
             center: [113.524173, 22.801624],
-            style: 'https://data.osmbuildings.org/0.2/anonymous/style.json',
+            style:'./style_tdt.json',//'https://data.osmbuildings.org/0.2/anonymous/style.json',
             zoom: 13,
             pitch: 100,
             bearing: -10,
@@ -174,8 +182,58 @@
         }
         // 使用刚指定的配置项和数据显示图表
         myChart.setOption(echartsOption)
+
+        var mapbox = myChart.getModel().getComponent('mapbox3D').getMapbox();
+        var vectorUrl = 'http://10.10.52.120:58080/geoserver/gwc/service/tms/1.0.0/'+workspace+layer_name+'@EPSG%3A'+ espg +'@pbf/{z}/{x}/{y}.pbf';
+
+        mapbox.on('load',function () {
+          console.log('load');
+          mapbox.addLayer(
+            {
+              "id": 'merge-layer',
+              "type": "line",
+              "source": {
+                "scheme": 'tms',
+                "type": 'vector',
+//        "tiles": ["https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt?api_key=vector-tiles-LM25tq4"]
+                "tiles": [vectorUrl],
+//        'tileSize': 512
+              },
+              "source-layer": layer_name,//layer_name,
+//      "paint": {
+//        "line-color": "#3887be"
+//      },
+              "layout": {
+                "line-join": "round",
+                "line-cap": "round"
+              },
+              "paint":{
+
+                "line-color": getLineStyle('speed'),
+                "line-width": 3,
+                'line-opacity': 0.9
+              } ,
+              'minzoom': 8
+            }
+          );
+        })
+
+
+
       })
-    })
+    });
+    function getLineStyle(fieldName) {
+      return {
+        property: fieldName,
+        type: "interval",
+        stops: [
+          [-1.0,'transparent'],
+          [0.0, "#800026"],
+          [5.0001, "#E31A1C"],
+          [15.0001, "#FEB24C"],
+          [30.0001, "#00ff00"]
+        ]}
+    }
   </script>
 </body>
 

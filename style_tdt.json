@@ -1,0 +1,46 @@
+{
+  "version": 8,
+  "name": "Raster Tiles",
+  "glyphs": "https://smellman.github.io/creating_tiles_with_global_map_support_files/2015/mapbox_vector_tile_demo/demosites/fonts/{fontstack}/{range}.pbf",
+  "sprite": "https://smellman.github.io/creating_tiles_with_global_map_support_files/2015/mapbox_vector_tile_demo/demosites/maki-sprites/sprite",
+  "sources": {
+    "vec_z": {
+      "type": "raster",
+      "tiles": [
+        "http://t1.tianditu.com/DataServer?T=cva_w&X={x}&Y={y}&L={z}",
+        "http://t2.tianditu.com/DataServer?T=cva_w&X={x}&Y={y}&L={z}",
+        "http://t3.tianditu.com/DataServer?T=cva_w&X={x}&Y={y}&L={z}"
+      ],
+      "tileSize": 256
+    },
+    "vec_d":{
+      "tiles":[
+        "http://t0.tianditu.com/DataServer?T=vec_w&X={x}&Y={y}&L={z}",
+        "http://t1.tianditu.com/DataServer?T=vec_w&X={x}&Y={y}&L={z}",
+        "http://t2.tianditu.com/DataServer?T=vec_w&X={x}&Y={y}&L={z}",
+        "http://t3.tianditu.com/DataServer?T=vec_w&X={x}&Y={y}&L={z}",
+        "http://t4.tianditu.com/DataServer?T=vec_w&X={x}&Y={y}&L={z}",
+        "http://t5.tianditu.com/DataServer?T=vec_w&X={x}&Y={y}&L={z}"
+      ],
+      "type":"raster",
+      "tileSize": 256
+    }
+  },
+  "layers": [{
+    "id": "vec_d",
+    "type": "raster",
+    "source": "vec_d",
+    "paint": {
+      "raster-fade-duration": 100
+    }
+  },
+    {
+      "id": "vec_z",
+      "type": "raster",
+      "source": "vec_z",
+      "paint": {
+        "raster-fade-duration": 100
+      }
+    }
+  ]
+}
