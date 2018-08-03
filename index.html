@@ -30,23 +30,28 @@
     }
   </style>
   <link href="https://cdn.bootcss.com/normalize/8.0.0/normalize.min.css" rel="stylesheet">
-  <link href="https://cdn.bootcss.com/mapbox-gl/0.43.0/mapbox-gl.css" rel="stylesheet">
+  <!--<link href="https://cdn.bootcss.com/mapbox-gl/0.47.0/mapbox-gl.css" rel="stylesheet">-->
+  <link href="https://cdn.osmbuildings.org/mapbox-gl/0.47.0/mapbox-gl.css" rel="stylesheet">
+
+  <script src="https://cdn.osmbuildings.org/mapbox-gl/0.47.0/mapbox-gl.js"></script>
 </head>
 
 <body>
   <div id="app">
     <div id="map"></div>
   </div>
-  <script src="https://cdn.bootcss.com/mapbox-gl/0.43.0/mapbox-gl.js" charset="utf-8"></script>
+  <!--<script src="https://cdn.bootcss.com/mapbox-gl/0.47.0/mapbox-gl.js" charset="utf-8"></script>-->
   <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js" charset="utf-8"></script>
   <!-- 引入 echarts.js -->
-  <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
-  <script src="./echarts-gl.min.js" charset="utf-8"></script>
+  <script src="https://cdn.bootcss.com/echarts/4.1.0/echarts.min.js"></script>
+  <script src="./node_modules/echarts-gl/dist/echarts-gl.min.js" charset="utf-8"></script>
+  <script src="./EchartsLayer.js" charset="utf-8"></script>
+  <!--<script src="./echarts-gl.min.js" charset="utf-8"></script>-->
   <script type="text/javascript">
     // mapbox TOKEN
-    mapboxgl.accessToken = 'pk.eyJ1IjoiamFzb25obyIsImEiOiJjamU1Yjh6YTAyeXczMnFwOTl1aGRwNnZmIn0.cSgyLOqrlhlNPPpZAtXO7g'
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic3V0cGMiLCJhIjoiY2o4MWE3ZHI5MjZqYzJ3czZuanRidHhlaSJ9.QyvBqMh9qPYw85xbiMeW9w'
     var myChart = echarts.init(document.getElementById("map"))
-    $.getJSON("map.geojson", function(buildingsGeoJSON) {
+    $.getJSON("map0.geojson", function(buildingsGeoJSON) {
       // 注册可用的地图
       echarts.registerMap('buildings', buildingsGeoJSON)
       // 地图区域的数据
@@ -58,6 +63,8 @@
           label: feature.properties.name
         };
       })
+      // mapbox://styles/sutpc/cjk84o65sh0yo2rqnapcetdth
+      // mapbox://styles/mapbox/dark-v9
       $.getJSON("road.geojson", function(roadsJSON) {
         // console.log(roadsJSON)
         var taxiRoutes = roadsJSON.map(item => {
@@ -79,7 +86,7 @@
           },
           mapbox: {
             center: [113.524173, 22.801624],
-            style: 'mapbox://styles/jasonho/cje7u4sylbj7f2sn31bxq55t6',
+            style: 'https://data.osmbuildings.org/0.2/anonymous/style.json',
             zoom: 13,
             pitch: 100,
             bearing: -10,

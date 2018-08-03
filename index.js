@@ -6,7 +6,8 @@ var request = require('request')
 var fs = require('fs')
 let arr = []
 let arrRoad = []
-let search = [
+const search=['小区']
+let search0 = [
   '小区',
   // '公园',
   '医院',
@@ -86,14 +87,15 @@ let district = '南沙区 '
 let LENGTH = 0.001
 
 let url = 'https://ditu.amap.com/service/poiInfo?query_type=TQUERY&pagesize=45&pagenum=1&qii=true&cluster_state=5&need_utd=true&utd_sceneid=1000&div=PC1000&addr_poi_merge=true&is_classify=true&zoom=12&city=440100&geoobj=113.22766%7C22.807345%7C113.722045%7C22.908896&_src=around&keywords='
-search.forEach(keyword => {
+search0.forEach(keyword => {
   arr.push(new Promise(resolve => {
+    console.log(url + encodeURI(district + keyword))
     request((url + encodeURI(district + keyword)), (error, response, body) => {
       if (!error && response.statusCode === 200) {
         let transBody = body && JSON.parse(body)
         let {data} = transBody
         let {poi_list} = data
-        console.log(data)
+        // console.log(data)
         let regionData = poi_list.map(item => {
           let hasAoi = item.domain_list.find(i => i.name === 'aoi')
           let po1 = [
@@ -182,22 +184,23 @@ Promise.all(arr).then(urls => {
   })
 })
 
-// 道路
-Promise.all(arrRoad).then(urls => {
-  fs.unlink(__dirname + '/road.geojson', err => {
-    if (err) {
-      console.log(err)
-      return false
-    }
-    console.log(urls)
-    fs.writeFile(__dirname + '/road.geojson', JSON.stringify(urls), {
-      flag: 'a'
-    }, err => {
-      if (err) {
-        console.error(err)
-      } else {
-        console.log('写入成功')
-      }
-    })
-  })
-})
+//
+// // 道路
+// Promise.all(arrRoad).then(urls => {
+//   fs.unlink(__dirname + '/road.geojson', err => {
+//     if (err) {
+//       console.log(err)
+//       return false
+//     }
+//     console.log(urls)
+//     fs.writeFile(__dirname + '/road.geojson', JSON.stringify(urls), {
+//       flag: 'a'
+//     }, err => {
+//       if (err) {
+//         console.error(err)
+//       } else {
+//         console.log('写入成功')
+//       }
+//     })
+//   })
+// })

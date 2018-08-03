@@ -2,6 +2,9 @@
   "name": "",
   "version": "",
   "dependencies": {
+    "echarts": "^4.1.0",
+    "echarts-gl": "^1.1.1",
+    "mapbox-gl": "^0.47.0",
     "request": "^2.83.0"
   }
 }
